@@ -1,0 +1,26 @@
+{
+  "manifest_version": 3,
+  "name": "Fake Form Detection (Course Project)",
+  "version": "0.1.0",
+  "description": "Detects suspicious login forms (Instagram/Gmail/Facebook lookalikes) and warns users before submission.",
+  "permissions": [
+    "storage",
+    "scripting",
+    "activeTab",
+    "alarms"
+  ],
+  "host_permissions": [
+    "<all_urls>",
+    "https://safebrowsing.googleapis.com/*"
+  ],
+  "background": {
+    "service_worker": "service_worker.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["utils.js", "content_script.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}

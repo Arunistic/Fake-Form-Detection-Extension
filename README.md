@@ -115,6 +115,16 @@ window.addEventListener("load", () => {
 2. Open demo phishing pages (local or controlled environment) with forms mimicking Instagram, Gmail, or Facebook.
 3. Check that warning modals appear for suspicious forms.
 4. Open legitimate login pages (Instagram, Gmail) to verify that the extension does not falsely flag them.
+5. Click the **Report** button in the extension's warning popup to submit a report.  
+Then open **chrome://extensions**, find the Fake Form Detection extension, and click the **Service worker** link.  
+This opens the developer tools for the background worker.
+
+In the console, run:
+
+```javascript
+chrome.storage.local.get("reports").then(console.log);
+``` 
+to view all the reports stored by the extension in chrome's local storage.
 
 ### Test Results
 

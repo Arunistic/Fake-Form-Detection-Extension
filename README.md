@@ -2,7 +2,7 @@
 
 ### Overview
 
-Fake Form Detection is a Chrome browser extension developed as a course project to detect and alert users when they attempt to submit credentials on suspicious login forms. The extension specifically targets phishing attempts that mimic platforms like Instagram, Gmail, and Facebook. It uses real-time DOM analysis and form heuristics to identify potentially dangerous forms.
+Fake Form Detection is a Chrome browser extension developed as a course project to detect and alert users when they attempt to submit credentials on suspicious login forms.
 
 Fake Form Detection provides **real-time protection against phishing and credential theft**.  
 It analyzes every webpage's forms, user interactions, and network requests to detect suspicious behavior such as:
@@ -119,7 +119,6 @@ window.addEventListener("load", () => {
 ### Test Results
 
 ![Test-Site Detection](./screenshots/Result1.png)
-
 ![Test-Site2 Availibility](./screenshots/test2.1.png)
 ![Test-Site2 Availibility](./screenshots/test2.2.png)
 ![Fake-Insta](./screenshots/insta.png)
